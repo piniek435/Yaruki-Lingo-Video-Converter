@@ -1,0 +1,11 @@
+buildozer @ git+https://github.com/kivy/buildozer.git@d87a2e8749b553300b11dd6066795cf394e53170
+Cython==0.29.37
+importlib_metadata==7.0.2
+packaging==23.2
+pexpect==4.9.0
+ptyprocess==0.7.0
+pyinstaller==6.4.0
+pyinstaller-hooks-contrib==2024.2
+zipp==3.17.0
+kivy==2.3.0
+plyer==2.1.0

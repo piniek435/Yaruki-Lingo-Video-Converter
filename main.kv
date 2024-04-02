@@ -1,0 +1,207 @@
+Interface:
+
+
+<Interface>:
+    orientation: "vertical"
+
+    #1.ROW
+    BoxLayout:
+        canvas:
+            Color:
+                #rgba: (1, 1, 1, 1) #ffffff white
+                rgba: (0.945, 0.961, 0.976, 1) #f1f5f9 dirty-white
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Label:
+            text: "SELECT VIDEO FILE"
+            color: (0.129, 0.6, 0.51, 1) #ffffff green
+            font_size: '24sp'
+            bold: True
+            #size_hint_y: None
+            #height: self.texture_size[1] + dp(10)
+            halign: 'center'
+            valign: 'middle'
+
+
+
+    #2.ROW
+    BoxLayout:
+        size_hint: (1, None)
+        canvas:
+            Color:
+                rgba: (1, 0, 0, 1) #ffffff white
+                rgba: (0.945, 0.961, 0.976, 1) #f1f5f9 dirty-white
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            size_hint: (0.1, 1)
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: (1,None)
+            size_y: 40
+            canvas:
+                Color:
+                    #rgba: (1, 1, 1, 1) #ffffff white
+                    rgba: (0.945, 0.961, 0.976, 1) #f1f5f9 dirty-white
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: (0.9, 1)
+                FileTextInput:
+                    id: text_input
+                    size_hint: (0.8, None)
+                    size: (0, 50)
+                    multiline: False
+                    padding: [10, 10, 10, 10]
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            BoxLayout:
+                size_hint: (None, 1)
+                size: (160, 0)
+                ImageBtn:
+                    source: 'img/button_select.png'
+                    text: "Select"
+                    on_press: self.load_file()
+        BoxLayout:
+            size_hint: (0.1, 1)
+    #3.ROW
+    BoxLayout:
+        canvas:
+            Color:
+                #rgba: (1, 1, 1, 1) #ffffff white
+                rgba: (0.945, 0.961, 0.976, 1) #f1f5f9 dirty-white
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Label:
+            text: "PRESET"
+            color: (0.129, 0.6, 0.51, 1) #ffffff green
+            font_size: '24sp'
+            bold: True
+            #size_hint_y: None
+            #height: self.texture_size[1] + dp(10)
+            halign: 'center'
+            valign: 'middle'
+
+
+    #4.ROW
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: (1, None)
+        size: (0, 40)
+        canvas:
+            Color:
+                rgba: (0.945, 0.961, 0.976, 1) #f1f5f9 dirty-white
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+        CheckBox:
+            size_hint_x: 0.25
+            text: "option1"
+            group: 'radio_button_group'
+            on_press: app.set_performance("BEST PERFORMANCE")
+        CheckBox:
+            size_hint_x: 0.25
+            text: "option2"
+            group: 'radio_button_group'
+            active: True
+            on_press: app.set_performance("BALANCED")
+        CheckBox:
+            size_hint_x: 0.25
+            text: "option3"
+            group: 'radio_button_group'
+            on_press: app.set_performance("BEST QUALITY")
+        CheckBox:
+            size_hint_x: 0.25
+            text: "option4"
+            group: 'radio_button_group'
+            on_press: app.set_performance("AUDIO")
+
+    #5.ROW
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: (1, None)
+        size: (0, 60)
+        canvas:
+            Color:
+                rgba: (0.945, 0.961, 0.976, 1) #f1f5f9 dirty-white
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Label:
+            size_hint_x: 0.25
+            text: "BEST \nPERFORMANCE"
+            color: (0, 0, 0, 1)
+            font_size: '12sp'
+            halign: 'center'
+            valign: 'middle'
+        Label:
+            size_hint_x: 0.25
+            text: "BALANCED"
+            color: (0, 0, 0, 1)
+            font_size: '12sp'
+            halign: 'center'
+            valign: 'middle'
+        Label:
+            size_hint_x: 0.25
+            text: "BEST \nQUALITY"
+            color: (0, 0, 0, 1)
+            font_size: '12sp'
+            halign: 'center'
+            valign: 'middle'
+        Label:
+            size_hint_x: 0.25
+            text: "AUDIO"
+            color: (0, 0, 0, 1)
+            font_size: '12sp'
+            halign: 'center'
+            valign: 'middle'
+
+
+    #6.ROW
+    BoxLayout:
+        orientation: 'vertical'
+        #size_hint: (1,1)
+        #size_y: 80
+        canvas:
+            Color:
+                #rgba: (1, 1, 1, 1) #ffffff white
+                rgba: (0.945, 0.961, 0.976, 1) #f1f5f9 dirty-white
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        ImageBtn:
+            source: 'img/button_start.png'
+            text: "START"
+            size_hint: (None,1)
+            size: (270, 80)
+            pos_hint: {'center_x': .5, 'center_y': 0}
+            on_press: self.convert_file()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
