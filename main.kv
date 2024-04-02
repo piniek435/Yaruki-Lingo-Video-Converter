@@ -65,8 +65,17 @@ Interface:
                     source: 'img/button_select.png'
                     text: "Select"
                     on_press: self.load_file()
+            Spinner:
+                size_hint: None, None
+                size: 100, 44
+                pos_hint: {'center': (.5, .5)}
+                text: '0'
+                values: app.audio_tracks_info
+                on_text:
+                    app.set_audio_track(self.text)
         BoxLayout:
             size_hint: (0.1, 1)
+
     #3.ROW
     BoxLayout:
         canvas:
@@ -120,6 +129,11 @@ Interface:
             text: "option4"
             group: 'radio_button_group'
             on_press: app.set_performance("AUDIO")
+        CheckBox:
+            size_hint_x: 0.25
+            text: "option5"
+            group: 'radio_button_group'
+            on_press: app.set_performance("SUBTITLES")
 
     #5.ROW
     BoxLayout:
@@ -156,6 +170,13 @@ Interface:
         Label:
             size_hint_x: 0.25
             text: "AUDIO"
+            color: (0, 0, 0, 1)
+            font_size: '12sp'
+            halign: 'center'
+            valign: 'middle'
+        Label:
+            size_hint_x: 0.25
+            text: "SUBTITLES"
             color: (0, 0, 0, 1)
             font_size: '12sp'
             halign: 'center'
