@@ -2,7 +2,6 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.spinner import Spinner
 from kivy.uix.image import Image
 from kivy.uix.textinput import TextInput
 from kivy.properties import StringProperty
@@ -25,7 +24,6 @@ class ImageBtn(ButtonBehavior, Image):
         performance_setting = App.get_running_app().performance_setting
         audio_track = App.get_running_app().audio_track
         final_audio_track = int(audio_track[-1])
-        print(final_audio_track)
 
         script_path = os.path.realpath(sys.argv[0])
         directory_path = os.path.dirname(script_path)
@@ -34,15 +32,15 @@ class ImageBtn(ButtonBehavior, Image):
         systype = ["win", "macosx", "linux"]
 
         if performance_setting == "BEST QUALITY":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset veryfast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} {output_file}"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset veryfast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} {output_file}"
         if performance_setting == "BALANCED":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset superfast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} -vf scale=1280:720 {output_file}"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset superfast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} -vf scale=1280:720 {output_file}"
         if performance_setting == "BEST PERFORMANCE":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} -vf scale=960:540 {output_file}"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} -vf scale=960:540 {output_file}"
         if performance_setting == "AUDIO":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -vcodec copy -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} {output_file}"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -vcodec copy -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} {output_file}"
         if performance_setting == "SUBTITLES":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -map 0:{subs_track_number} subs{subs_track_number}.srt"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -map 0:{subs_track_number} subs{subs_track_number}.srt"
 
         try:
             subprocess.run(ffmpeg_command, check=True, shell=True)
@@ -54,8 +52,6 @@ class ImageBtn(ButtonBehavior, Image):
         performance_setting = App.get_running_app().performance_setting
 
         print("Conversion started...!")
-        # convert_video_on_win(f'{FileTextInput.Instance.text}', "new_video.mp4")
-        # convert_video_on_win(r"{}".format(FileTextInput.Instance.text), "new_video.mp4")
         if performance_setting == "SUBTITLES":
             for i in range(50):
                 self.convert_video_on_win(FileTextInput.Instance.text, "subs_{i}.srt", subs_track_number=i)
@@ -79,7 +75,7 @@ class ImageBtn(ButtonBehavior, Image):
             directory_path = os.path.dirname(script_path)
             quoted_input_file = f'"{file_path}"'
             systype = ["win", "macosx", "linux"]
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -i {quoted_input_file} -hide_banner"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -i {quoted_input_file} -hide_banner"
             # Execute the ffmpeg command to check for audio tracks
             result = subprocess.run(
                 ffmpeg_command,
@@ -99,16 +95,12 @@ class ImageBtn(ButtonBehavior, Image):
             language_tracks = re.findall(pattern, output, re.MULTILINE)
             language_tracks_id = re.findall(id_Pattern, output, re.MULTILINE)
 
-            # Print the extracted language tracks
             track_info = {}
             for track_id, language in zip(language_tracks_id, language_tracks):
                 track_info[track_id] = language
 
-            print(track_info)
             App.get_running_app().audio_tracks_info = [lang for key, lang in track_info.items()]
             App.get_running_app().audio_tracks_data = track_info
-            # if len(language_tracks) > 0:
-            # print(output)
 
 
 def SetLocation(text):
@@ -132,14 +124,14 @@ class Interface(BoxLayout):
 class MainApp(App):
     performance_setting = StringProperty('BALANCED')  # Default value can be set here
     audio_track = StringProperty('0:a:1')  # Default value can be set here
-    audio_tracks_info = ListProperty()  # This will store the audio track information
+    audio_tracks_info = ListProperty()
     audio_tracks_data = {}
 
     def set_audio_track(self, audio_track):
         self.audio_track = audio_track
         for key, value in self.audio_tracks_data.items():
             if value == audio_track:
-                print(key)  # This will print the key associated with the desired value
+                print(key)
                 self.audio_track = key
                 break
     def set_performance(self, setting_value):
