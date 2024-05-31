@@ -5,14 +5,26 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.textinput import TextInput
 from kivy.properties import StringProperty
+from kivy.utils import platform
 from kivy.properties import ListProperty
 from plyer import filechooser
 import os
 import sys
 import subprocess
 import re
+#IMPORTING jnius
+from jnius import autoclass
+from jnius import * 
+#Declaring Variable so it can be used
+FFMPEG = autoclass('com.sahib.pyff.ffpy')
 
 # python3 -m PyInstaller --hidden-import=kivy --hidden-import=plyer.platforms.macosx.filechooser --hidden-import=pyobjus --hidden-import=subprocess main.py
+
+if platform == "android":
+    from android.permissions import request_permissions, Permission, check_permission  # pylint: disable=import-error # type: ignore
+    request_permissions([Permission.READ_EXTERNAL_STORAGE,
+                        Permission.WRITE_EXTERNAL_STORAGE])
+
 # widgets
 class ImageBtn(ButtonBehavior, Image):
 
@@ -28,19 +40,37 @@ class ImageBtn(ButtonBehavior, Image):
         script_path = os.path.realpath(sys.argv[0])
         directory_path = os.path.dirname(script_path)
         quoted_input_file = f'"{input_file}"'
+        
+        print(quoted_input_file)
+        ffmpegCommand = FFMPEG.Run("ffmpeg")
+        print(ffmpegCommand)
+
+        # try:
+        #     subprocess.run("ffmpeg", check=True, shell=True)
+        #     print(f"Sucessfully converted! New file: {output_file}")
+        # except subprocess.CalledProcessError as e:
+        #     print("Conversion failed")
+
+        # try:
+        #     stream = ffmpeg.input(quoted_input_file)
+        #     stream = ffmpeg.output(stream, 'output.mp4')
+        #     ffmpeg.run(stream)
+        # except subprocess.CalledProcessError as e:
+        #     print("Conversion failed")
+            
 
         systype = ["win", "macosx", "linux"]
 
         if performance_setting == "BEST QUALITY":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset veryfast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} {output_file}"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset veryfast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} {output_file}"
         if performance_setting == "BALANCED":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset superfast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} -vf scale=1280:720 {output_file}"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset superfast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} -vf scale=1280:720 {output_file}"
         if performance_setting == "BEST PERFORMANCE":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} -vf scale=960:540 {output_file}"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} -vf scale=960:540 {output_file}"
         if performance_setting == "AUDIO":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -vcodec copy -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} {output_file}"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -vcodec copy -pix_fmt yuv420p -acodec aac -movflags +faststart -map 0:v:0 -map 0:a:{final_audio_track - 1} {output_file}"
         if performance_setting == "SUBTITLES":
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -y -i {quoted_input_file} -map 0:{subs_track_number} subs{subs_track_number}.srt"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -y -i {quoted_input_file} -map 0:{subs_track_number} subs{subs_track_number}.srt"
 
         try:
             subprocess.run(ffmpeg_command, check=True, shell=True)
@@ -75,7 +105,7 @@ class ImageBtn(ButtonBehavior, Image):
             directory_path = os.path.dirname(script_path)
             quoted_input_file = f'"{file_path}"'
             systype = ["win", "macosx", "linux"]
-            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[1]}/ffmpeg -i {quoted_input_file} -hide_banner"
+            ffmpeg_command = f"{directory_path}/ffmpeg/{systype[0]}/ffmpeg -i {quoted_input_file} -hide_banner"
             # Execute the ffmpeg command to check for audio tracks
             result = subprocess.run(
                 ffmpeg_command,
@@ -140,7 +170,10 @@ class MainApp(App):
         self.title = "YarukiLingo Video Converter"
         self.icon = "img/yaruki.ico"
         Window.borderless = False
-        Window.size = (1460 * 0.6, 820 * 0.6)
+        if platform == 'android' or platform == 'ios':
+            Window.maximize()
+        else:
+            Window.size = (1460 * 0.6, 820 * 0.6)
 
 
 MainApp().run()
